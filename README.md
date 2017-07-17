@@ -9,4 +9,5 @@ You can:
 <li>Edit / remove</li>
 <li>Sort by tags</li>
 </ul>
+<br />
 And of course it can be used for creating categorized sets of any links.
