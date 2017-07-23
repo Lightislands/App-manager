@@ -134,17 +134,7 @@ var itemController = (function(){
         });
     });
 
-    
-/*============================================= Build Categories list =============================================*/
-    function buildCategoryList(){
-        var categoryList = "";
-        for (var i=0; i < arrCategory.length; i++){
-            categoryList = categoryList + '<li><a class="waves-effect" href="#">'+ arrCategory[i].name +'</a></li>'
-        }
-        $('.side-nav').empty().append(categoryList);
-    }buildCategoryList();
 
-    
 
 /*============================================= Add new Category =============================================*/
 
@@ -241,6 +231,28 @@ var itemController = (function(){
     }
 
 
+/*============================================= Check if categories empty ==============================================*/
+// calculate items for each category
+
+    function itemsInCatCounter(cats, items){
+
+        for(var i=0; i<cats.length; i++){
+            cats[i].itemCounter = 0; // Reset to 0
+
+            items.map(function(el){
+                var partsOfCatStr = el.category.split(',') // Split item cat string to separate cat item (for more than 1 cat)
+                for(var c=0; c<partsOfCatStr.length; c++){
+                    if(partsOfCatStr[c] === cats[i].name){ // compare with string of all cats not only 1
+                        cats[i].itemCounter++;
+                    }
+                }
+            });
+        }
+        localStorage.setItem('ahCategories', JSON.stringify(arrCategory));
+    }
+
+
+
 /*============================================== Check All categories if they has an items =====================================*/
 
     function ifCatEmpty() {
@@ -251,7 +263,7 @@ var itemController = (function(){
                 arrCategory.splice(i, 1);
 
                 localStorage['ahCategories'] = JSON.stringify(arrCategory); // Save arr to localStorage
-                buildCategoryList();
+                UIController.buildCatList();
             }
 
         }
@@ -262,6 +274,8 @@ var itemController = (function(){
 
 
     return {
+
+        itemsInCatCounter: itemsInCatCounter,
 
         getDataAutocomplete: getDataAutocomplete,
         
@@ -280,15 +294,14 @@ var itemController = (function(){
         addItem: function(item) {
 
             // Save new item to Array and to LocalStorage
-            arrItems.push(item);
+            arrItems.push(item); console.log(arrItems)
             localStorage['ahData'] = JSON.stringify(arrItems);
         },
         
         addCategory: function (newCat) {
             addNewCat(newCat);
         },
-        
-        buildCatList: buildCategoryList,
+
 
         allItems: arrItems
 

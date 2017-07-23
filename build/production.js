@@ -148,17 +148,7 @@ var itemController = (function(){
         });
     });
 
-    
-/*============================================= Build Categories list =============================================*/
-    function buildCategoryList(){
-        var categoryList = "";
-        for (var i=0; i < arrCategory.length; i++){
-            categoryList = categoryList + '<li><a class="waves-effect" href="#">'+ arrCategory[i].name +'</a></li>'
-        }
-        $('.side-nav').empty().append(categoryList);
-    }buildCategoryList();
 
-    
 
 /*============================================= Add new Category =============================================*/
 
@@ -255,6 +245,28 @@ var itemController = (function(){
     }
 
 
+/*============================================= Check if categories empty ==============================================*/
+// calculate items for each category
+
+    function itemsInCatCounter(cats, items){
+
+        for(var i=0; i<cats.length; i++){
+            cats[i].itemCounter = 0; // Reset to 0
+
+            items.map(function(el){
+                var partsOfCatStr = el.category.split(',') // Split item cat string to separate cat item (for more than 1 cat)
+                for(var c=0; c<partsOfCatStr.length; c++){
+                    if(partsOfCatStr[c] === cats[i].name){ // compare with string of all cats not only 1
+                        cats[i].itemCounter++;
+                    }
+                }
+            });
+        }
+        localStorage.setItem('ahCategories', JSON.stringify(arrCategory));
+    }
+
+
+
 /*============================================== Check All categories if they has an items =====================================*/
 
     function ifCatEmpty() {
@@ -265,7 +277,7 @@ var itemController = (function(){
                 arrCategory.splice(i, 1);
 
                 localStorage['ahCategories'] = JSON.stringify(arrCategory); // Save arr to localStorage
-                buildCategoryList();
+                UIController.buildCatList();
             }
 
         }
@@ -276,6 +288,8 @@ var itemController = (function(){
 
 
     return {
+
+        itemsInCatCounter: itemsInCatCounter,
 
         getDataAutocomplete: getDataAutocomplete,
         
@@ -294,15 +308,14 @@ var itemController = (function(){
         addItem: function(item) {
 
             // Save new item to Array and to LocalStorage
-            arrItems.push(item);
+            arrItems.push(item); console.log(arrItems)
             localStorage['ahData'] = JSON.stringify(arrItems);
         },
         
         addCategory: function (newCat) {
             addNewCat(newCat);
         },
-        
-        buildCatList: buildCategoryList,
+
 
         allItems: arrItems
 
@@ -336,6 +349,16 @@ var UIController = (function(){
 
     var DOM = DOMstrings;
     var allItems = itemController.allItems;
+
+
+    /*============================================= Build Categories list =============================================*/
+    function buildCategoryList(){
+        var categoryList = "";
+        for (var i=0; i < itemController.categories.length; i++){
+            categoryList = categoryList + '<li><a class="waves-effect" href="#">'+ itemController.categories[i].name +'</a><span>'+ itemController.categories[i].itemCounter +'</span></li>'
+        }
+        $('.side-nav').empty().append(categoryList);
+    }buildCategoryList();
 
 
 
@@ -421,7 +444,6 @@ var UIController = (function(){
 
             // 2. Reduce item Counter
             allCat[index].itemCounter--;
-
 
             // check amount of items in category
             itemController.ifCatEmpty();
@@ -543,7 +565,8 @@ var UIController = (function(){
             
             return NewItem;
         },
-
+        buildCatList: buildCategoryList,
+        
         removeItem: removeThisItem,
 
         editItem: editThisItem,
@@ -581,6 +604,10 @@ var controller = (function(itemCtrl, UICtrl){
 
         var DOM = UIController.getDOMstrings();
 
+
+       /* $('.button-collapse').click(function(){
+
+        });*/
 
         // Add new inputs
 
@@ -634,21 +661,21 @@ var controller = (function(itemCtrl, UICtrl){
         // 2. Add input to model, Save Item
         newItem = itemController.addItem(input);
 
-        // Increase counter in categories
+        // 3. Increase counter in categories
         itemController.catCounter(input);
 
-        // 3. Reload all items in UI
+        // 4. Reload all items in UI
         UIController.displayItems();
 
-        // 4. Reload categories in UI (in case new category added)
-        itemController.buildCatList();
+        // 5. Reload categories in UI (in case new category added)
+        UIController.buildCatList();
     };
 
 
 /*============================================= Edit items - Submit =============================================*/
     // Submit existing in the form data
                                                 // !!! Eny field can be changed, category amounts also!!!
-    var ctrlEditItem = function () { 
+    var ctrlEditItem = function () {
 
         var input;
         // 1. Get input
@@ -657,17 +684,25 @@ var controller = (function(itemCtrl, UICtrl){
         // 2. Find and remove item by link from Array
         itemController.removeIfEdit(input);
 
-        // 2. Add input to modal, Save Item
+        // 3. Add input to modal, Save Item
         itemController.addItem(input);
 
-        // 3. Reload all items in UI
+        // Increase counter in categories
+        //itemController.catCounter(input); // What if delete category?
+
+        // 4. Reload all items in UI
         UIController.displayItems();
 
-        // 4. Remove category if empty
-        itemController.ifCatEmpty();
+        // 5. Remove category if empty
+        //itemController.ifCatEmpty();
 
-        // 4. Reload categories in UI (in case new category added)
-        itemController.buildCatList();
+
+        itemController.itemsInCatCounter(itemController.categories, itemController.allItems);
+
+        // 6. Reload categories in UI (in case new category added)
+        UIController.buildCatList();
+
+
     };
 
 

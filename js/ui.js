@@ -22,6 +22,16 @@ var UIController = (function(){
     var allItems = itemController.allItems;
 
 
+    /*============================================= Build Categories list =============================================*/
+    function buildCategoryList(){
+        var categoryList = "";
+        for (var i=0; i < itemController.categories.length; i++){
+            categoryList = categoryList + '<li><a class="waves-effect" href="#">'+ itemController.categories[i].name +'</a><span>'+ itemController.categories[i].itemCounter +'</span></li>'
+        }
+        $('.side-nav').empty().append(categoryList);
+    }buildCategoryList();
+
+
 
     /*============================================= Build items list =============================================*/
 
@@ -105,7 +115,6 @@ var UIController = (function(){
 
             // 2. Reduce item Counter
             allCat[index].itemCounter--;
-
 
             // check amount of items in category
             itemController.ifCatEmpty();
@@ -227,7 +236,8 @@ var UIController = (function(){
             
             return NewItem;
         },
-
+        buildCatList: buildCategoryList,
+        
         removeItem: removeThisItem,
 
         editItem: editThisItem,

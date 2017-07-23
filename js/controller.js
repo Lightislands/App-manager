@@ -19,6 +19,10 @@ var controller = (function(itemCtrl, UICtrl){
         var DOM = UIController.getDOMstrings();
 
 
+       /* $('.button-collapse').click(function(){
+
+        });*/
+
         // Add new inputs
 
         $(DOM.addNewItem).on( "submit", function( event ) {
@@ -71,21 +75,21 @@ var controller = (function(itemCtrl, UICtrl){
         // 2. Add input to model, Save Item
         newItem = itemController.addItem(input);
 
-        // Increase counter in categories
+        // 3. Increase counter in categories
         itemController.catCounter(input);
 
-        // 3. Reload all items in UI
+        // 4. Reload all items in UI
         UIController.displayItems();
 
-        // 4. Reload categories in UI (in case new category added)
-        itemController.buildCatList();
+        // 5. Reload categories in UI (in case new category added)
+        UIController.buildCatList();
     };
 
 
 /*============================================= Edit items - Submit =============================================*/
     // Submit existing in the form data
                                                 // !!! Eny field can be changed, category amounts also!!!
-    var ctrlEditItem = function () { 
+    var ctrlEditItem = function () {
 
         var input;
         // 1. Get input
@@ -94,17 +98,25 @@ var controller = (function(itemCtrl, UICtrl){
         // 2. Find and remove item by link from Array
         itemController.removeIfEdit(input);
 
-        // 2. Add input to modal, Save Item
+        // 3. Add input to modal, Save Item
         itemController.addItem(input);
 
-        // 3. Reload all items in UI
+        // Increase counter in categories
+        //itemController.catCounter(input); // What if delete category?
+
+        // 4. Reload all items in UI
         UIController.displayItems();
 
-        // 4. Remove category if empty
-        itemController.ifCatEmpty();
+        // 5. Remove category if empty
+        //itemController.ifCatEmpty();
 
-        // 4. Reload categories in UI (in case new category added)
-        itemController.buildCatList();
+
+        itemController.itemsInCatCounter(itemController.categories, itemController.allItems);
+
+        // 6. Reload categories in UI (in case new category added)
+        UIController.buildCatList();
+
+
     };
 
 
