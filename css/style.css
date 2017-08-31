@@ -7425,7 +7425,6 @@ button.picker__close:focus {
 }
 .side-nav li a {
   margin-right: auto;
-  width: 90%;
 }
 .side-nav li span {
   line-height: 20px;
@@ -7434,10 +7433,15 @@ button.picker__close:focus {
   font-size: 0.6rem;
   text-align: center;
   margin-top: 13px;
-  border: 1px solid #ccc;
+  background-color: #bbde53;
   -webkit-border-radius: 50%;
   -moz-border-radius: 50%;
   border-radius: 50%;
+  /*text-align: center;
+      margin-top: 10px;
+      padding-bottom: 10px;
+      display: inline-block;
+      float: right;*/
 }
 .itembox {
   width: 100%;

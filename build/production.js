@@ -273,16 +273,20 @@ var itemController = (function(){
 
         for(var i=0; i< arrCategory.length; i++) {
             if(arrCategory[i].itemCounter < 1){
+
                 arrCategory.splice(i, 1);
+
                 localStorage['ahCategories'] = JSON.stringify(arrCategory); // Save arr to localStorage
                 UIController.buildCatList();
             }
+
         }
     }
 
 
 
-    
+
+
     return {
 
         itemsInCatCounter: itemsInCatCounter,
@@ -312,18 +316,24 @@ var itemController = (function(){
             addNewCat(newCat);
         },
 
+
         allItems: arrItems
+
+
     };
 
+
+    
 })();
 
 
 // Start ui.js
 
-let UIController = (() => {
+var UIController = (function(){
     
-    let DOMstrings = {
+    var DOMstrings = {
         inputLink: '#add__link',
+        //inputName: '#add__name',
         inputCategory: '#add__category',
         inputCategoryHidden: 'input[name="category"]',
         newBtn: '#add-new',
@@ -337,31 +347,29 @@ let UIController = (() => {
         inputCategoryEdit: '#edit__category'
     };
 
-    let DOM = DOMstrings;
-    let allItems = itemController.allItems;
-
+    var DOM = DOMstrings;
+    var allItems = itemController.allItems;
 
 
     /*============================================= Build Categories list =============================================*/
-    let buildCategoryList = () => {
-        let categoryList = "";
-        for (let [i, value] of itemController.categories.entries()) { // using destructuring and .entries
-            categoryList = categoryList+`<li><a class="waves-effect" href="#">${itemController.categories[i].name}</a><span>${itemController.categories[i].itemCounter}</span></li>`
+    function buildCategoryList(){
+        var categoryList = "";
+        for (var i=0; i < itemController.categories.length; i++){
+            categoryList = categoryList + '<li><a class="waves-effect" href="#">'+ itemController.categories[i].name +'</a><span>'+ itemController.categories[i].itemCounter +'</span></li>'
         }
         $('.side-nav').empty().append(categoryList);
-    };
-    buildCategoryList();
+    }buildCategoryList();
 
 
 
     /*============================================= Build items list =============================================*/
 
-    let addListItem = cat => {
+    function addListItem(cat){
 
-            let itemsList = '';
-            let allItems = itemController.allItems;
-            let newItem;
-            let item = '<div class="item"><a class="edit"><i class="material-icons">mode_edit</i></a><a class="remove"><i class="material-icons">delete</i></a><a class="link" target="_blank" href="%link%"><img src="https://icons.better-idea.org/icon?url=%link%&size=80..120..200" /><p>%name%</p></a></div>';
+            var itemsList = '';
+            var allItems = itemController.allItems;
+            var newItem;
+            var item = '<div class="item"><a class="edit"><i class="material-icons">mode_edit</i></a><a class="remove"><i class="material-icons">delete</i></a><a class="link" target="_blank" href="%link%"><img src="https://icons.better-idea.org/icon?url=%link%&size=80..120..200" /><p>%name%</p></a></div>';
 
             function buildItem(){
                 newItem = item.replace(/%link%/g, allItems[i].link);
@@ -369,20 +377,19 @@ let UIController = (() => {
                 itemsList = itemsList + newItem;
             }
 
-            let i;
             if(cat){ // if invoked with parameter (click on category name)
-                for(i=0; i<allItems.length; i++){
+                for(var i=0; i<allItems.length; i++){
 
                     // if more than 1 category in item
-                    let cats = allItems[i].category.split(',');
-                    for(let c=0; c<cats.length; c++){
+                    var cats = allItems[i].category.split(',');
+                    for(var c=0; c<cats.length; c++){
                         if(cat === cats[c]){
                             buildItem();
                         }
                     }
                 }
             }else {
-                for(i=0; i<allItems.length; i++){
+                for(var i=0; i<allItems.length; i++){
                     buildItem();
                 }
             }
@@ -390,18 +397,27 @@ let UIController = (() => {
             $('.itembox').empty() .append(
                 itemsList
             );
-    };
+    }
 
 
     /*============================================= Remove Item =============================================*/
 
     function removeThisItem() {
 
-        let item = event.target.parentNode.parentNode;
-        let itemLink = $(event.target).parent().parent().find('a.link').attr('href');
-
+        var item = event.target.parentNode.parentNode;
+        var itemLink = $(event.target).parent().parent().find('a.link').attr('href');
+        
+        
+        // find item
+        /*for (var i = 0; i < allItems.length; i++){
+            if(itemLink === allItems[i].link){
+                itemAllCategories = allItems[i].category;
+                allItems.splice(i, 1);
+            }
+        }*/
+        
         // Remove Item and get its Categories
-        let itemAllCategories = itemController.removeItem(itemLink);
+        var itemAllCategories = itemController.removeItem(itemLink);
 
         localStorage['ahData'] = JSON.stringify(allItems); // Save arr to localStorage
         item.remove(); // Remove item from UI
@@ -415,22 +431,33 @@ let UIController = (() => {
 
     function removeCategory(cat) {
 
-        let itemCategories = cat.split(','); // Get Array of item categories
+        var itemCategories = cat.split(','); // Get Array of item categories
 
-        for (let i=0; i<itemCategories.length; i++){
 
-            let catOfItem = itemCategories[i]; // array with cats of item
-            let allCat = itemController.categories;
+        for (var i=0; i<itemCategories.length; i++){
 
-            // 1. Find Item in All cat array (take index of cat obj in array)
-            let index = allCat.map(function(e) {return e.name; }).indexOf(catOfItem);
+            var catOfItem = itemCategories[i]; // array with cats of item
+            var allCat = itemController.categories;
+
+            // 1. Find Item in All cat aray (take index of cat obj in array)
+            var index = allCat.map(function(e) {return e.name; }).indexOf(catOfItem);
 
             // 2. Reduce item Counter
             allCat[index].itemCounter--;
 
             // check amount of items in category
             itemController.ifCatEmpty();
+            
+            /*
+            if(allCat[index].itemCounter == 0){
+                allCat.splice(index,1);
+                localStorage['ahCategories'] = JSON.stringify(allCat);
+                itemController.buildCatList();
+            }
+            */
+            
         }
+
     }
 
 
@@ -442,10 +469,10 @@ let UIController = (() => {
         $(DOM.modalEditItem+' label').css('display', 'none');  // hide input label in modal
 
         // ------------ Get item link
-        let itemLink = $(event.target).parent().parent().find('a.link').attr('href');
+        var itemLink = $(event.target).parent().parent().find('a.link').attr('href');
 
         // ------------ Get item by link from itemController
-        let item = itemController.findItemByLink(itemLink);
+        var item = itemController.findItemByLink(itemLink);
 
         
         // ------------ Filing the form
@@ -482,7 +509,7 @@ let UIController = (() => {
 
             // Take data from Form
 
-            let catObj; // take data Obj from chip and save to array
+            var catObj; // take data Obj from chip and save to array
 
             if(edit){
                 catObj = $(DOM.inputCategoryEdit).material_chip('data');
@@ -491,17 +518,17 @@ let UIController = (() => {
             }
 
 
-            let catList = [];
-            let allCatCopy = itemController.categories;
+            var catList = [];
+            var allCatCopy = itemController.categories;
 
-            for(let i=0; i< catObj.length; i++) {
+            for(var i=0; i< catObj.length; i++) {
                 // create arr with chip data (convert chip objects to arr items)
                 catList.push(catObj[i].tag);
 
                 // if new category
                 // Check if Object value already exist in array of objects
-                let exist, newCatItem;
-                for(let c=0; c < allCatCopy.length; c++){
+                var exist, newCatItem;
+                for(var c=0; c < allCatCopy.length; c++){
                     if(catObj[i].tag == allCatCopy[c].name){
                         exist=1;
                         break;
@@ -520,7 +547,7 @@ let UIController = (() => {
 
 
             // take data from inputs
-            let NewItem = {};
+            var NewItem = {};
             $(DOM.addNewItem).serializeArray().forEach(function(item) {
                 NewItem[item.name] = item.value;
             });
@@ -549,17 +576,22 @@ let UIController = (() => {
         },
 
         displayItems: addListItem
+        
+
+
+
+
     };
 
 })();
 // Start controller.js
 
 
-let controller = ((itemCtrl, UICtrl) => {
+var controller = (function(itemCtrl, UICtrl){
 /* =================================================== Materialize =================================================== */
 
 // Initialize collapse button
-    $('.button-collapse').sideNav();
+    $(".button-collapse").sideNav();
 // Initialize collapsible (uncomment the line below if you use the dropdown variation)
     $('.collapsible').collapsible();
 // Initialize modal
@@ -568,10 +600,14 @@ let controller = ((itemCtrl, UICtrl) => {
 /* =================================================== Event Listeners =================================================== */
 
     // Events
-    let setupEventListeners = () => {
+    var setupEventListeners = function () {
 
-        let DOM = UIController.getDOMstrings();
+        var DOM = UIController.getDOMstrings();
 
+
+       /* $('.button-collapse').click(function(){
+
+        });*/
 
         // Add new inputs
 
@@ -580,14 +616,17 @@ let controller = ((itemCtrl, UICtrl) => {
             ctrlAddItem();
         });
 
+
         // Show Items in Category
         
         $(DOM.catName).on( "click", function( event ) {
             event.preventDefault();
-            let cat = $(event.target).parent().find('a').text();
+            
+            var cat = $(event.target).parent().find('a').text();
             UICtrl.displayItems(cat);
         });
-        
+
+
         // Remove item
         
         $('.itembox').on( 'click', DOM.removeItem, function( event ) {
@@ -607,13 +646,15 @@ let controller = ((itemCtrl, UICtrl) => {
             event.preventDefault();
             ctrlEditItem();
         });
+
+
     };
 
 
 /*============================================= Add new items =============================================*/
-    let ctrlAddItem = () => {
+    var ctrlAddItem = function(){
         
-        let input, newItem;
+        var input, newItem;
         // 1. Get input
         input = UIController.getInput();
 
@@ -634,9 +675,9 @@ let controller = ((itemCtrl, UICtrl) => {
 /*============================================= Edit items - Submit =============================================*/
     // Submit existing in the form data
                                                 // !!! Eny field can be changed, category amounts also!!!
-    let ctrlEditItem = () => {
+    var ctrlEditItem = function () {
 
-        let input;
+        var input;
         // 1. Get input
         input = UIController.getInput('edit');
 
@@ -654,13 +695,16 @@ let controller = ((itemCtrl, UICtrl) => {
 
         // 5. Remove category if empty
         //itemController.ifCatEmpty();
-        
+
+
         itemController.itemsInCatCounter(itemController.categories, itemController.allItems);
 
         // 6. Reload categories in UI (in case new category added)
         UIController.buildCatList();
 
+
     };
+
 
     return {
         init: function(){
@@ -669,6 +713,7 @@ let controller = ((itemCtrl, UICtrl) => {
             setupEventListeners();
         }
     };
+
     
 })(itemController, UIController); // Invoke controller with this parameters, so it can use its methods
 
