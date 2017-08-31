@@ -259,20 +259,16 @@ var itemController = (function(){
 
         for(var i=0; i< arrCategory.length; i++) {
             if(arrCategory[i].itemCounter < 1){
-
                 arrCategory.splice(i, 1);
-
                 localStorage['ahCategories'] = JSON.stringify(arrCategory); // Save arr to localStorage
                 UIController.buildCatList();
             }
-
         }
     }
 
 
 
-
-
+    
     return {
 
         itemsInCatCounter: itemsInCatCounter,
@@ -302,13 +298,8 @@ var itemController = (function(){
             addNewCat(newCat);
         },
 
-
         allItems: arrItems
-
-
     };
 
-
-    
 })();
 

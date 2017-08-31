@@ -1,11 +1,11 @@
 // Start controller.js
 
 
-var controller = (function(itemCtrl, UICtrl){
+let controller = ((itemCtrl, UICtrl) => {
 /* =================================================== Materialize =================================================== */
 
 // Initialize collapse button
-    $(".button-collapse").sideNav();
+    $('.button-collapse').sideNav();
 // Initialize collapsible (uncomment the line below if you use the dropdown variation)
     $('.collapsible').collapsible();
 // Initialize modal
@@ -14,14 +14,10 @@ var controller = (function(itemCtrl, UICtrl){
 /* =================================================== Event Listeners =================================================== */
 
     // Events
-    var setupEventListeners = function () {
+    let setupEventListeners = () => {
 
-        var DOM = UIController.getDOMstrings();
+        let DOM = UIController.getDOMstrings();
 
-
-       /* $('.button-collapse').click(function(){
-
-        });*/
 
         // Add new inputs
 
@@ -30,17 +26,14 @@ var controller = (function(itemCtrl, UICtrl){
             ctrlAddItem();
         });
 
-
         // Show Items in Category
         
         $(DOM.catName).on( "click", function( event ) {
             event.preventDefault();
-            
-            var cat = $(event.target).parent().find('a').text();
+            let cat = $(event.target).parent().find('a').text();
             UICtrl.displayItems(cat);
         });
-
-
+        
         // Remove item
         
         $('.itembox').on( 'click', DOM.removeItem, function( event ) {
@@ -60,15 +53,13 @@ var controller = (function(itemCtrl, UICtrl){
             event.preventDefault();
             ctrlEditItem();
         });
-
-
     };
 
 
 /*============================================= Add new items =============================================*/
-    var ctrlAddItem = function(){
+    let ctrlAddItem = () => {
         
-        var input, newItem;
+        let input, newItem;
         // 1. Get input
         input = UIController.getInput();
 
@@ -89,9 +80,9 @@ var controller = (function(itemCtrl, UICtrl){
 /*============================================= Edit items - Submit =============================================*/
     // Submit existing in the form data
                                                 // !!! Eny field can be changed, category amounts also!!!
-    var ctrlEditItem = function () {
+    let ctrlEditItem = () => {
 
-        var input;
+        let input;
         // 1. Get input
         input = UIController.getInput('edit');
 
@@ -109,16 +100,13 @@ var controller = (function(itemCtrl, UICtrl){
 
         // 5. Remove category if empty
         //itemController.ifCatEmpty();
-
-
+        
         itemController.itemsInCatCounter(itemController.categories, itemController.allItems);
 
         // 6. Reload categories in UI (in case new category added)
         UIController.buildCatList();
 
-
     };
-
 
     return {
         init: function(){
@@ -127,7 +115,6 @@ var controller = (function(itemCtrl, UICtrl){
             setupEventListeners();
         }
     };
-
     
 })(itemController, UIController); // Invoke controller with this parameters, so it can use its methods
 
