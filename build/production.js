@@ -18,20 +18,20 @@ if (typeof(Storage) !== "undefined") {
     alert('No Web Storage support in your browser');
 }
 
-var itemController = (function(){
+let itemController = (function(){
 
-        var arrItems = [];
+        let arrItems = [];
 /*============================================= Add default =============================================*/
 
 /* ------- Add default Items ------- */
         if (localStorage.getItem('ahData') === null){
-            var arrSampleItems = [];
+            let arrSampleItems = [];
 
-            var sampleData = function(link, name, category){
+            let sampleData = function(link, name, category){
                 this.link = link;
                 this.name = name;
                 this.category = category;
-                this.pushToArr = function(){
+                this.pushToArr = () => {
                     arrSampleItems.push(newData);
                 }
             };
@@ -69,13 +69,13 @@ var itemController = (function(){
 
 
 
-    var arrCategory = [];
+    let arrCategory = [];
 
-    var NewCategory = function(name, itemCounter){
+    let NewCategory = function(name, itemCounter){
       this.name = name;
       this.itemCounter = itemCounter;
 
-      this.pushToArr = function(){
+      this.pushToArr = () => {
           arrCategory.push(newCat);
       }
     };
@@ -101,9 +101,9 @@ var itemController = (function(){
 /* ------- Convert categories data to make compatible with chip autocomplete ------- */
     
     function getDataAutocomplete(){
-        var dataAutocomplete = {};
-        for(var i=0; i<arrCategory.length; i++){
-            var key = arrCategory[i].name;
+        let dataAutocomplete = {};
+        for(let i=0; i<arrCategory.length; i++){
+            let key = arrCategory[i].name;
             dataAutocomplete[key] = null;
         }
         return dataAutocomplete;
@@ -116,22 +116,6 @@ var itemController = (function(){
     $(document).ready(function(){
 /* ------- Initialize tags ------- */
         $('.chips').material_chip();
-
-        /*$('.chips-initial').material_chip({
-
-            data: [{
-             tag: 'Task Management',
-             }, {
-             tag: 'Mind Map',
-             }, {
-             tag: 'File transfer',
-             }, {
-             tag: 'File storage',
-             },{
-             tag: 'Uncategorised',
-             }],
-
-        });*/
 
         $('.chips-autocomplete').material_chip({
             placeholder: 'Add more +',
@@ -153,7 +137,7 @@ var itemController = (function(){
 /*============================================= Add new Category =============================================*/
 
     function addNewCat(newCat){
-            var cat = new NewCategory(newCat, 0);
+            let cat = new NewCategory(newCat, 0);
             arrCategory.push(cat);
             localStorage.setItem('ahCategories', JSON.stringify(arrCategory));
         }
@@ -162,12 +146,12 @@ var itemController = (function(){
 
     function findByLink(link){
 
-        var item = {
+        let item = {
             name: '',
             cat: []
         };
         
-        for (var i = 0; i < arrItems.length; i++){ //search item to take its data for inputs
+        for (let i = 0; i < arrItems.length; i++){ //search item to take its data for inputs
 
             if(link === arrItems[i].link){
 
@@ -178,15 +162,15 @@ var itemController = (function(){
                 item.link = arrItems[i].link;
 
                 // Get item Categories
-                var arrCurrentCategories = [];
-                var categoriesString = arrItems[i].category; // getting string with all categories
-                var categoriesParsed = categoriesString.split(","); // save categories to array
+                let arrCurrentCategories = [];
+                let categoriesString = arrItems[i].category; // getting string with all categories
+                let categoriesParsed = categoriesString.split(","); // save categories to array
 
-                for(var c=0; c<categoriesParsed.length; c++){ // Convert categories arr to obj for chip
-                    var catObj = function(tag){
+                for(let c=0; c<categoriesParsed.length; c++){ // Convert categories arr to obj for chip
+                    let catObj = function(tag){
                         this.tag = tag;
                     };
-                    var x = new catObj(categoriesParsed[c]);
+                    let x = new catObj(categoriesParsed[c]);
                     arrCurrentCategories.push(x);
                 }
 
@@ -201,16 +185,16 @@ var itemController = (function(){
 /*============================================= If Item Exist =============================================*/
 
     function removeIfEdit(input){
-        var itemLink = input.link;
+        let itemLink = input.link;
         removeItem(itemLink);
     }
 
 /*============================================= Remove Item ==============================================*/
     
     function removeItem(itemLink){
-        var itemAllCategories;
+        let itemAllCategories;
         // find item
-        for (var i = 0; i < arrItems.length; i++){
+        for (let i = 0; i < arrItems.length; i++){
             if(itemLink === arrItems[i].link){
                 itemAllCategories = arrItems[i].category;
                 arrItems.splice(i, 1);
@@ -227,14 +211,13 @@ var itemController = (function(){
     function catCounter(item){
 
         // 1. Find categories in arrCategories
-        var arrItemCat = item.category.split(',');
-        //var allCat = itemController.categories;
+        let arrItemCat = item.category.split(',');
 
         // 2. Increase counter for each category
-        for(var i=0; i<arrItemCat.length; i++){
+        for(let i=0; i<arrItemCat.length; i++){
 
             // Take index of category in array
-            var index = arrCategory.map(function(e) {return e.name; }).indexOf(arrItemCat[i]);
+            let index = arrCategory.map(function(e) {return e.name; }).indexOf(arrItemCat[i]);
             // Increase counter for categories
             arrCategory[index].itemCounter++;
         }
@@ -250,15 +233,16 @@ var itemController = (function(){
 
     function itemsInCatCounter(cats, items){
 
-        for(var i=0; i<cats.length; i++){
+        for(let i=0; i<cats.length; i++){
             cats[i].itemCounter = 0; // Reset to 0
 
             items.map(function(el){
-                var partsOfCatStr = el.category.split(',') // Split item cat string to separate cat item (for more than 1 cat)
-                for(var c=0; c<partsOfCatStr.length; c++){
-                    if(partsOfCatStr[c] === cats[i].name){ // compare with string of all cats not only 1
-                        cats[i].itemCounter++;
-                    }
+                let partsOfCatStr = el.category.split(',') // Split item cat string to separate cat item (for more than 1 cat)
+                for(let c=0; c<partsOfCatStr.length; c++){
+                    // if(partsOfCatStr[c] === cats[i].name){ // compare with string of all cats not only 1
+                    //     cats[i].itemCounter++;
+                    // }
+                    partsOfCatStr[c] === cats[i].name ? cats[i].itemCounter++ : undefined; // compare with string of all cats not only 1
                 }
             });
         }
@@ -271,11 +255,10 @@ var itemController = (function(){
 
     function ifCatEmpty() {
 
-        for(var i=0; i< arrCategory.length; i++) {
+        for(let i=0; i< arrCategory.length; i++) {
             if(arrCategory[i].itemCounter < 1){
                 arrCategory.splice(i, 1);
                 localStorage['ahCategories'] = JSON.stringify(arrCategory); // Save arr to localStorage
-                UIController.buildCatList();
             }
         }
     }
@@ -424,12 +407,8 @@ let UIController = (() => {
 
             // 1. Find Item in All cat array (take index of cat obj in array)
             let index = allCat.map(function(e) {return e.name; }).indexOf(catOfItem);
-
             // 2. Reduce item Counter
             allCat[index].itemCounter--;
-
-            // check amount of items in category
-            itemController.ifCatEmpty();
         }
     }
 
@@ -592,7 +571,7 @@ let controller = ((itemCtrl, UICtrl) => {
         
         $('.itembox').on( 'click', DOM.removeItem, function( event ) {
             event.preventDefault();
-            UICtrl.removeItem();
+            ctrlRemoveItem();
         });
 
         // Edit item
@@ -654,13 +633,27 @@ let controller = ((itemCtrl, UICtrl) => {
 
         // 5. Remove category if empty
         //itemController.ifCatEmpty();
-        
+        // 5. Calculate items in cat
         itemController.itemsInCatCounter(itemController.categories, itemController.allItems);
 
         // 6. Reload categories in UI (in case new category added)
         UIController.buildCatList();
 
     };
+
+/*============================================= Remove items =============================================*/
+
+    let ctrlRemoveItem = () => {
+        
+        UICtrl.removeItem();
+
+        // check amount of items in category
+        itemController.ifCatEmpty();
+
+        // refresh cat list
+        UIController.buildCatList();
+    };
+
 
     return {
         init: function(){

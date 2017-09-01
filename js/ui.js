@@ -104,12 +104,8 @@ let UIController = (() => {
 
             // 1. Find Item in All cat array (take index of cat obj in array)
             let index = allCat.map(function(e) {return e.name; }).indexOf(catOfItem);
-
             // 2. Reduce item Counter
             allCat[index].itemCounter--;
-
-            // check amount of items in category
-            itemController.ifCatEmpty();
         }
     }
 

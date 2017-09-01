@@ -38,7 +38,7 @@ let controller = ((itemCtrl, UICtrl) => {
         
         $('.itembox').on( 'click', DOM.removeItem, function( event ) {
             event.preventDefault();
-            UICtrl.removeItem();
+            ctrlRemoveItem();
         });
 
         // Edit item
@@ -100,13 +100,27 @@ let controller = ((itemCtrl, UICtrl) => {
 
         // 5. Remove category if empty
         //itemController.ifCatEmpty();
-        
+        // 5. Calculate items in cat
         itemController.itemsInCatCounter(itemController.categories, itemController.allItems);
 
         // 6. Reload categories in UI (in case new category added)
         UIController.buildCatList();
 
     };
+
+/*============================================= Remove items =============================================*/
+
+    let ctrlRemoveItem = () => {
+        
+        UICtrl.removeItem();
+
+        // check amount of items in category
+        itemController.ifCatEmpty();
+
+        // refresh cat list
+        UIController.buildCatList();
+    };
+
 
     return {
         init: function(){
