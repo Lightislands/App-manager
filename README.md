@@ -11,3 +11,4 @@ You can:
 </ul>
 <br />
 And of course it can be used for creating categorized sets of any links.
+<img src="https://raw.githubusercontent.com/Lightislands/App-manager/master/apps-holder.jpg" alt="app-manager" />
