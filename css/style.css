@@ -7415,8 +7415,20 @@ button.picker__close:focus {
 .three_rem {
   font-size: 3rem!important;
 }
-.side-nav {
+.side-nav #categories::-webkit-scrollbar-track {
+  -webkit-box-shadow: inset 0 0 2px rgba(0, 0, 0, 0.3);
+  background-color: #fff;
+}
+.side-nav #categories::-webkit-scrollbar {
+  width: 6px;
+}
+.side-nav #categories::-webkit-scrollbar-thumb {
+  background-color: #ccc;
+}
+.side-nav ul {
   padding-top: 47px;
+  height: 50%;
+  overflow-y: auto;
 }
 .side-nav li {
   display: flex;
@@ -7438,6 +7450,18 @@ button.picker__close:focus {
   -webkit-border-radius: 50%;
   -moz-border-radius: 50%;
   border-radius: 50%;
+}
+.side-nav .bottom {
+  margin-top: 20px;
+  display: flex;
+  justify-content: space-around;
+}
+.side-nav .bottom #upload {
+  display: none;
+}
+.side-nav .bottom #download,
+.side-nav .bottom #upload-triger {
+  font-size: 0.7rem;
 }
 .itembox {
   width: 100%;
@@ -7473,8 +7497,7 @@ button.picker__close:focus {
   width: 100%;
   height: 100%;
 }
-.item .edit,
-.item .remove {
+.item .edit {
   width: 30px;
   height: 30px;
   margin: 10px 5px 0 5px;
@@ -7488,24 +7511,22 @@ button.picker__close:focus {
   color: #b1ebed;
 }
 .item .edit {
-  float: left;
+  position: absolute;
+  right: 0;
 }
-.item .remove {
-  float: right;
-}
-.item .edit:hover,
-.item .remove:hover {
+.item .edit:hover {
   background-color: #f8f8fa;
   border: 1px solid #eeeeee;
   color: #23deea;
 }
-.item:hover .edit,
-.item:hover .remove {
+.item:hover .edit {
   opacity: 1;
 }
 @media all and (max-width: 1024px) {
-  .edit,
-  .remove {
+  .edit {
     opacity: 1!important;
   }
+}
+.remove {
+  float: left!important;
 }

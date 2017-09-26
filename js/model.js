@@ -250,9 +250,58 @@ let itemController = (function(){
     }
 
 
+/*============================================== Download =====================================*/
+    
+    function download() {
+        let arrDownload = {};
+        arrDownload['items'] = arrItems;
+        arrDownload['categories'] = arrCategory;
+        let data = "text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(arrDownload));
+        return data;
+    }
+
+/*============================================= UPLOAD FILE ==========================*/
+    
+    function handleFileSelect(evt) {
+        var files = evt.target.files; // FileList object
+        // use the 1st file from the list
+        f = files[0];
+        var reader = new FileReader();
+        // Closure to capture the file information.
+        reader.onload = (function(theFile) {
+            return function(e) {
+                var parsed = JSON.parse(e.target.result);
+
+                let uploadedCategories = parsed.categories;
+                let uploadedItems = parsed.items;
+
+                itemController.categories = uploadedCategories;
+                itemController.allItems = uploadedItems;
+
+                localStorage.setItem('ahCategories', JSON.stringify(itemController.categories));
+                localStorage.setItem('ahData', JSON.stringify(itemController.allItems));
+
+
+
+                // 3. Reload all items in UI
+                UIController.displayItems();
+                // 4. Reload categories in UI (in case new category added)
+                UIController.buildCatList();
+
+
+
+            };
+        })(f);
+        // Read in the file as a data URL.
+        reader.readAsText(f);
+    }
 
     
+
     return {
+        handleFileSelect: handleFileSelect,
+        
+        download: download,
 
         itemsInCatCounter: itemsInCatCounter,
 
@@ -273,7 +322,7 @@ let itemController = (function(){
         addItem: function(item) {
 
             // Save new item to Array and to LocalStorage
-            arrItems.push(item); console.log(arrItems)
+            arrItems.push(item);
             localStorage['ahData'] = JSON.stringify(arrItems);
         },
         

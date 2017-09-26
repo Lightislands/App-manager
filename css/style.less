@@ -13,7 +13,22 @@
 //body {background-color: @color-two;}
 // Side panel
 .side-nav {
-  padding-top: 47px;
+  #categories::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 2px rgba(0,0,0,0.3);
+    background-color: #fff;
+  }
+  #categories::-webkit-scrollbar {
+    width: 6px;
+  }
+  #categories::-webkit-scrollbar-thumb {
+    background-color: #ccc;
+  }
+
+  ul {
+    padding-top: 47px;
+    height: 50%;
+    overflow-y: auto;
+  }
   li {
     display: flex;
     justify-content: flex-start;
@@ -35,6 +50,20 @@
       .border-radius (50%);
     }
   }
+
+  .bottom {
+    margin-top: 20px;
+    display: flex;
+    justify-content: space-around;
+
+    #upload {
+      display: none;
+    }
+    #download, #upload-triger {
+      font-size: 0.7rem;
+    }
+  }
+
 }
 
 .itembox {
@@ -67,7 +96,7 @@
     height: 100%;
   }
 
-  .edit, .remove {
+  .edit {
     width: 30px;
     height: 30px;
     margin: 10px 5px 0 5px;
@@ -81,12 +110,13 @@
     color: #b1ebed;
   }
   .edit {
-    float: left;
+    position: absolute;
+    right: 0;
   }
-  .remove {
-    float: right;
-  }
-  .edit:hover, .remove:hover {
+  //.remove {
+  //  float: right;
+  //}
+  .edit:hover {
     background-color: #f8f8fa;
     border: 1px solid #eeeeee;
     color: #23deea;
@@ -95,13 +125,20 @@
 }
 
 
-.item:hover .edit, .item:hover .remove {
+.item:hover .edit {
   opacity: 1;
 }
 
 @media all and (max-width: 1024px){
-  .edit, .remove {
+  .edit {
     opacity: 1!important;
   }
 
 }
+
+
+.remove {
+  float: left!important;
+}
+
+

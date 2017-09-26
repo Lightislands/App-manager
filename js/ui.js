@@ -4,17 +4,20 @@ let UIController = (() => {
     
     let DOMstrings = {
         inputLink: '#add__link',
+        inputName: '#add__name',
         inputCategory: '#add__category',
         inputCategoryHidden: 'input[name="category"]',
         newBtn: '#add-new',
         addNewItem: '#add-item',
-        catName: '.side-nav',
+        //catName: '.side-nav',
+        catName: '#categories',
         removeItem: '.remove',
         editItemBtn: '.edit',
         chipTagsWrap: '.chips-autocomplete',
         modalEditItem: '#modalEditItem',
         editItem: '#edit-item',
-        inputCategoryEdit: '#edit__category'
+        inputCategoryEdit: '#edit__category',
+        download: '#download'
     };
 
     let DOM = DOMstrings;
@@ -28,7 +31,7 @@ let UIController = (() => {
         for (let [i, value] of itemController.categories.entries()) { // using destructuring and .entries
             categoryList = categoryList+`<li><a class="waves-effect" href="#">${itemController.categories[i].name}</a><span>${itemController.categories[i].itemCounter}</span></li>`
         }
-        $('.side-nav').empty().append(categoryList);
+        $(DOM.catName).empty().append(categoryList);
     };
     buildCategoryList();
 
@@ -37,11 +40,10 @@ let UIController = (() => {
     /*============================================= Build items list =============================================*/
 
     let addListItem = cat => {
-
             let itemsList = '';
             let allItems = itemController.allItems;
             let newItem;
-            let item = '<div class="item"><a class="edit"><i class="material-icons">mode_edit</i></a><a class="remove"><i class="material-icons">delete</i></a><a class="link" target="_blank" href="%link%"><img src="https://icons.better-idea.org/icon?url=%link%&size=80..120..200" /><p>%name%</p></a></div>';
+            let item = '<div class="item"><a class="edit"><i class="material-icons">more_vert</i></a><a class="link" target="_blank" href="%link%"><img src="https://icons.better-idea.org/icon?url=%link%&size=80..120..200" /><p>%name%</p></a></div>';
 
             function buildItem(){
                 newItem = item.replace(/%link%/g, allItems[i].link);
@@ -77,14 +79,17 @@ let UIController = (() => {
 
     function removeThisItem() {
 
-        let item = event.target.parentNode.parentNode;
-        let itemLink = $(event.target).parent().parent().find('a.link').attr('href');
+        // let item = event.target.parentNode.parentNode;
+        // let itemLink = $(event.target).parent().parent().find('a.link').attr('href');
+        let itemLink = $('#link-edit').val();
 
         // Remove Item and get its Categories
         let itemAllCategories = itemController.removeItem(itemLink);
 
         localStorage['ahData'] = JSON.stringify(allItems); // Save arr to localStorage
-        item.remove(); // Remove item from UI
+
+        let item = $('a[href^="'+itemLink+'"]');
+        item.parent().remove(); // Remove item from UI
 
         // Remove category if empty
         removeCategory(itemAllCategories);
@@ -139,16 +144,63 @@ let UIController = (() => {
             data: item.cat,
 
             autocompleteOptions: {
-                data: itemController.getDataAutocomplete(), // !!!!!!!!! Undefined
+                data: itemController.getDataAutocomplete(),
                 limit: Infinity,
                 minLength: 1
             }
 
         });
-
-       // $('input[name="category"]').val(item.cat); // store chip data arr to hidden input
-        
     }
+
+
+    function clearInputs() {
+        $(DOM.inputLink).val('');
+        $(DOM.inputName).val('');
+    }
+
+
+
+
+
+    /*============================================= DOWNLOAD FILE ==========================*/
+    function downloadItems(data){
+        $(DOM.download).prop({
+            'href': 'data:' + data,
+            'download': 'appsHolder.json'
+        });
+    }
+
+    /*============================================= UPLOAD FILE ==========================*/
+
+
+    function handleFileSelect(evt) {
+        var files = evt.target.files; // FileList object
+        // use the 1st file from the list
+        f = files[0];
+        var reader = new FileReader();
+        // Closure to capture the file information.
+        reader.onload = (function(theFile) {
+            return function(e) {
+                var parsed = JSON.parse(e.target.result);
+
+                let uploadedCategories = parsed.categories;
+                let uploadedItems = parsed.items;
+
+                itemController.categories = uploadedCategories;
+                itemController.allItems = uploadedItems;
+
+                localStorage.setItem('ahCategories', JSON.stringify(itemController.categories));
+                localStorage.setItem('ahData', JSON.stringify(itemController.allItems));
+            };
+        })(f);
+        // Read in the image file as a data URL.
+        reader.readAsText(f);
+        alert('Records has been synchronized');
+
+    }
+    
+
+
 
 
 
@@ -208,7 +260,7 @@ let UIController = (() => {
                     NewItem[item.name] = item.value;
                 });
                 
-                // !!!!!!  Check if all categories (All, not only item categories) has an items
+                // Check if all categories (All, not only item categories) has an items
                 
             }
             
@@ -224,7 +276,11 @@ let UIController = (() => {
             return DOMstrings;
         },
 
-        displayItems: addListItem
+        displayItems: addListItem,
+
+        clearInputs: clearInputs,
+
+        downloadItems: downloadItems
     };
 
 })();

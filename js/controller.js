@@ -18,6 +18,11 @@ let controller = ((itemCtrl, UICtrl) => {
 
         let DOM = UIController.getDOMstrings();
 
+        // Press NEW btn
+
+        $(DOM.newBtn).click(function() {
+            UIController.clearInputs();
+        });        
 
         // Add new inputs
 
@@ -35,9 +40,8 @@ let controller = ((itemCtrl, UICtrl) => {
         });
         
         // Remove item
-        
-        $('.itembox').on( 'click', DOM.removeItem, function( event ) {
-            event.preventDefault();
+
+        $(DOM.removeItem).click(function() {
             ctrlRemoveItem();
         });
 
@@ -53,12 +57,36 @@ let controller = ((itemCtrl, UICtrl) => {
             event.preventDefault();
             ctrlEditItem();
         });
+
+        // Download
+
+        $('#download').click(function() {
+            let data = itemController.download();
+            UIController.downloadItems(data);
+        });
+
+        // Upload
+
+        $('#upload-triger').click(function(){
+            ctrlUpload();
+        });
+
+
     };
 
+/*============================================= Upload =============================================*/
+    let ctrlUpload = () => {
+        // 1. click to hidden input
+        $("#upload").trigger("click");
+        // 2. Listen for click
+        document.getElementById('upload').addEventListener('change', itemController.handleFileSelect, false);
+        
+
+    };
 
 /*============================================= Add new items =============================================*/
     let ctrlAddItem = () => {
-        
+
         let input, newItem;
         // 1. Get input
         input = UIController.getInput();
@@ -111,7 +139,7 @@ let controller = ((itemCtrl, UICtrl) => {
 /*============================================= Remove items =============================================*/
 
     let ctrlRemoveItem = () => {
-        
+
         UICtrl.removeItem();
 
         // check amount of items in category
