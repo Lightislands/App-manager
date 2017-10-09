@@ -14,15 +14,7 @@
     <a href="#modalNewItem" id="add-new" class="btn-floating btn-large red">+
         <i class="large material-icons">mode_edit</i>
     </a>
-    <!--
-    <ul>
-        <li><a class="btn-floating blue darken-1"><i class="material-icons">mode_edit</i></a></li>
-        <li><a class="btn-floating red"><i class="material-icons">library_add</i></a></li>
-    </ul>
-    -->
 </div>
-
-
 
 
                                                                                                   <!-- Side panel -->
@@ -33,7 +25,8 @@
     <ul id="categories"></ul>
 
     <div class="divider"></div>
-
+    <div class="c-label">Manage Local copy</div>
+    <div class="clear">        </div>
     <div class="bottom">
         <a id="download" download="todayDate.json" class="waves-effect waves-light btn"><i class="material-icons left">file_download</i>Save</a>
         <a id="upload-triger" class="waves-effect waves-light btn"><i class="material-icons right">file_upload</i>Load</a>
@@ -45,14 +38,7 @@
 <a href="#" data-activates="slide-out" class="button-collapse"><i class="material-icons three_rem">menu</i></a>
 
                                                                                                   <!-- Main content -->
-<div class="itembox">
-    <!--
-    <a href="http://jsfiddle.net" target="_blank" class="item">
-        <img src="https://www.google.com/s2/favicons?domain=http://jsfiddle.net" />
-        <p>Name</p>
-    </a>
-    -->
-</div>
+<div class="itembox"></div>
 
                                                                                                   <!-- Modal add item -->
 
@@ -60,7 +46,7 @@
     <form id="add-item">
          <div class="modal-content">
              <div class="input-field">
-                 <input name="link" id="add__link" type="text" class="validate">
+                 <input name="link" id="add__link" type="text"  class="validate">
                  <label for="add__link">Link</label>
              </div>
              <div class="input-field">
@@ -72,11 +58,8 @@
                  <div id="add__category" class="chips chips-autocomplete"></div>
                  <input type="hidden" name="category" />
              </div>
-
          </div>
          <div class="modal-footer">
-            <!-- <a href="#!" id="add-item" class="modal-action modal-close waves-effect waves-green btn-flat">Add</a>-->
-
              <button id="addNew" class="btn waves-effect waves-light modal-action modal-close" type="submit" name="action">Submit
                  <i class="material-icons right">send</i>
              </button>
@@ -101,7 +84,7 @@
             </div>
         </div>
         <div class="modal-footer">
-            <button class="remove btn waves-effect waves-light modal-action modal-close" type="button" name="remove">Remove
+            <button class="remove modal-action modal-close btn-floating waves-effect waves-light" type="button" name="remove">
                 <i class="material-icons left">delete_forever</i>
             </button>
             <button class="btn waves-effect waves-light modal-action modal-close" type="submit" name="action">Submit
@@ -113,7 +96,7 @@
 
 
 
-<script src="build/script-babel.js" type="text/javascript"></script>
+<script src="build/production.js" type="text/javascript"></script>
 
 </body>
 </html>

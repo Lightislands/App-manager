@@ -40,11 +40,19 @@ let itemController = (function(){
             newData.pushToArr();
             var newData = new sampleData('https://www.mindmeister.com/','Mindmeister', 'Mind Map');
             newData.pushToArr();
-            var newData = new sampleData('https://wetransfer.com/','Wetransfer', 'File transfer');
+            var newData = new sampleData('https://wetransfer.com/','Wetransfer', 'File Transfer');
             newData.pushToArr();
-            var newData = new sampleData('https://www.dropbox.com/','Dropbox', 'File storage');
+            var newData = new sampleData('https://openload.co','Openload', 'File Transfer');
             newData.pushToArr();
-            var newData = new sampleData('https://drive.google.com/drive/my-drive','Google Drive', 'File storage');
+            var newData = new sampleData('https://www.dropbox.com/','Dropbox', 'File Storage');
+            newData.pushToArr();
+            var newData = new sampleData('https://drive.google.com/drive/my-drive','Google Drive', 'File Storage');
+            newData.pushToArr();
+            var newData = new sampleData('https://appear.in','Appear', 'Communication');
+            newData.pushToArr();
+            var newData = new sampleData('https://www.free-invoice-generator.com/','free-invoice-generator', 'Finance');
+            newData.pushToArr();
+            var newData = new sampleData('https://calendly.com/','Calendly', 'Scheduler');
             newData.pushToArr();
 
             localStorage.setItem('ahData', JSON.stringify(arrSampleItems));
@@ -72,11 +80,15 @@ let itemController = (function(){
         newCat.pushToArr();
         var newCat = new NewCategory('Mind Map', 4);
         newCat.pushToArr();
-        var newCat = new NewCategory('File transfer', 1);
+        var newCat = new NewCategory('File Transfer', 2);
         newCat.pushToArr();
-        var newCat = new NewCategory('File storage', 2);
+        var newCat = new NewCategory('File Storage', 2);
         newCat.pushToArr();
-        var newCat = new NewCategory('Uncategorised', 0);
+        var newCat = new NewCategory('Communication', 1);
+        newCat.pushToArr();
+        var newCat = new NewCategory('Finance', 1);
+        newCat.pushToArr();
+        var newCat = new NewCategory('Scheduler', 1);
         newCat.pushToArr();
 
         localStorage.setItem('ahCategories', JSON.stringify(arrCategory));
@@ -104,8 +116,8 @@ let itemController = (function(){
         $('.chips').material_chip();
 
         $('.chips-autocomplete').material_chip({
-            placeholder: 'Add more +',
             secondaryPlaceholder: 'Enter a category',
+            placeholder: 'Add more + ',
 
             autocompleteOptions: {
                 data: getDataAutocomplete(),
@@ -117,7 +129,6 @@ let itemController = (function(){
             }]
         });
     });
-
 
 
 /*============================================= Add new Category =============================================*/
@@ -263,14 +274,14 @@ let itemController = (function(){
 /*============================================= UPLOAD FILE ==========================*/
     
     function handleFileSelect(evt) {
-        var files = evt.target.files; // FileList object
+        let files = evt.target.files; // FileList object
         // use the 1st file from the list
         f = files[0];
-        var reader = new FileReader();
+        let reader = new FileReader();
         // Closure to capture the file information.
         reader.onload = (function(theFile) {
             return function(e) {
-                var parsed = JSON.parse(e.target.result);
+                let parsed = JSON.parse(e.target.result);
 
                 let uploadedCategories = parsed.categories;
                 let uploadedItems = parsed.items;
@@ -295,10 +306,23 @@ let itemController = (function(){
         // Read in the file as a data URL.
         reader.readAsText(f);
     }
-
+    
+/*============================================= UPLOAD FILE ==========================*/
+    
+    function getNameFromLink (e){
+        let link = e.originalEvent.clipboardData.getData('text');
+        function extractHostname(url) {
+            let hostname = url.replace(/^(?:https?:\/\/)?(?:www\.)?/i, "").split('/')[0];
+            return hostname;
+        }
+        let urlName = extractHostname(link).split('.')[0]; // remove ".com"
+        return (urlName);
+    }
     
 
     return {
+        getNameFromLink: getNameFromLink,
+        
         handleFileSelect: handleFileSelect,
         
         download: download,

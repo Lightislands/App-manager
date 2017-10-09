@@ -22,7 +22,8 @@ let controller = ((itemCtrl, UICtrl) => {
 
         $(DOM.newBtn).click(function() {
             UIController.clearInputs();
-        });        
+            UIController.validate();
+        });
 
         // Add new inputs
 
@@ -57,6 +58,13 @@ let controller = ((itemCtrl, UICtrl) => {
             event.preventDefault();
             ctrlEditItem();
         });
+        
+        // Listen link input
+
+        $(DOM.inputLink).on("paste", function(e){
+            ctrlGenerateName(e);
+        });
+
 
         // Download
 
@@ -74,15 +82,17 @@ let controller = ((itemCtrl, UICtrl) => {
 
     };
 
+
 /*============================================= Upload =============================================*/
     let ctrlUpload = () => {
         // 1. click to hidden input
         $("#upload").trigger("click");
         // 2. Listen for click
         document.getElementById('upload').addEventListener('change', itemController.handleFileSelect, false);
-        
 
     };
+
+
 
 /*============================================= Add new items =============================================*/
     let ctrlAddItem = () => {
@@ -104,10 +114,19 @@ let controller = ((itemCtrl, UICtrl) => {
         UIController.buildCatList();
     };
 
+/*============================= Generate name from link =============================*/
+
+    let ctrlGenerateName = (link) => {
+        // 1. Get name from link
+        let urlName = itemController.getNameFromLink(link);
+
+        // 2. paste name to name input
+        UIController.addName (urlName);
+    };
 
 /*============================================= Edit items - Submit =============================================*/
     // Submit existing in the form data
-                                                // !!! Eny field can be changed, category amounts also!!!
+                                                // !!! Any field can be changed, category amounts also!!!
     let ctrlEditItem = () => {
 
         let input;
@@ -121,7 +140,7 @@ let controller = ((itemCtrl, UICtrl) => {
         itemController.addItem(input);
 
         // Increase counter in categories
-        //itemController.catCounter(input); // What if delete category?
+        //itemController.catCounter(input);
 
         // 4. Reload all items in UI
         UIController.displayItems();

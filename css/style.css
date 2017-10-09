@@ -7529,4 +7529,13 @@ button.picker__close:focus {
 }
 .remove {
   float: left!important;
+  margin: 2px 0 0 14px;
+}
+.c-label {
+  width: 100%;
+  text-align: center;
+  float: left;
+  font-size: 0.8rem;
+  margin-top: 10px;
+  color: #b5b5b5;
 }

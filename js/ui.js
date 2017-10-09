@@ -8,6 +8,7 @@ let UIController = (() => {
         inputCategory: '#add__category',
         inputCategoryHidden: 'input[name="category"]',
         newBtn: '#add-new',
+        addNewSubmit: '#addNew',
         addNewItem: '#add-item',
         //catName: '.side-nav',
         catName: '#categories',
@@ -158,7 +159,16 @@ let UIController = (() => {
         $(DOM.inputName).val('');
     }
 
-
+    function validate() {
+        $(DOM.addNewSubmit).prop("disabled", true);
+        $(DOM.inputLink).on('input', function() {
+            if( !$(DOM.inputLink).val() ) {
+                $(DOM.addNewSubmit).prop("disabled", true);
+            }else {
+                $(DOM.addNewSubmit).prop("disabled", false);
+            }
+        });
+    }
 
 
 
@@ -170,38 +180,19 @@ let UIController = (() => {
         });
     }
 
-    /*============================================= UPLOAD FILE ==========================*/
 
+    /*============================================= Paste item name from link ==========================*/
 
-    function handleFileSelect(evt) {
-        var files = evt.target.files; // FileList object
-        // use the 1st file from the list
-        f = files[0];
-        var reader = new FileReader();
-        // Closure to capture the file information.
-        reader.onload = (function(theFile) {
-            return function(e) {
-                var parsed = JSON.parse(e.target.result);
+    function addName(urlName){
+        //$(DOM.inputName).trigger('click');
+        $(DOM.inputName).val(urlName);
 
-                let uploadedCategories = parsed.categories;
-                let uploadedItems = parsed.items;
-
-                itemController.categories = uploadedCategories;
-                itemController.allItems = uploadedItems;
-
-                localStorage.setItem('ahCategories', JSON.stringify(itemController.categories));
-                localStorage.setItem('ahData', JSON.stringify(itemController.allItems));
-            };
-        })(f);
-        // Read in the image file as a data URL.
-        reader.readAsText(f);
-        alert('Records has been synchronized');
-
+        setTimeout(function(){
+            $(DOM.inputName).focus();
+        }, 10);
     }
+
     
-
-
-
 
 
     return {
@@ -280,7 +271,11 @@ let UIController = (() => {
 
         clearInputs: clearInputs,
 
-        downloadItems: downloadItems
+        validate: validate,
+
+        downloadItems: downloadItems,
+
+        addName: addName
     };
 
 })();

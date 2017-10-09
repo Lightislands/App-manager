@@ -54,11 +54,19 @@ let itemController = (function(){
             newData.pushToArr();
             var newData = new sampleData('https://www.mindmeister.com/','Mindmeister', 'Mind Map');
             newData.pushToArr();
-            var newData = new sampleData('https://wetransfer.com/','Wetransfer', 'File transfer');
+            var newData = new sampleData('https://wetransfer.com/','Wetransfer', 'File Transfer');
             newData.pushToArr();
-            var newData = new sampleData('https://www.dropbox.com/','Dropbox', 'File storage');
+            var newData = new sampleData('https://openload.co','Openload', 'File Transfer');
             newData.pushToArr();
-            var newData = new sampleData('https://drive.google.com/drive/my-drive','Google Drive', 'File storage');
+            var newData = new sampleData('https://www.dropbox.com/','Dropbox', 'File Storage');
+            newData.pushToArr();
+            var newData = new sampleData('https://drive.google.com/drive/my-drive','Google Drive', 'File Storage');
+            newData.pushToArr();
+            var newData = new sampleData('https://appear.in','Appear', 'Communication');
+            newData.pushToArr();
+            var newData = new sampleData('https://www.free-invoice-generator.com/','free-invoice-generator', 'Finance');
+            newData.pushToArr();
+            var newData = new sampleData('https://calendly.com/','Calendly', 'Scheduler');
             newData.pushToArr();
 
             localStorage.setItem('ahData', JSON.stringify(arrSampleItems));
@@ -86,11 +94,15 @@ let itemController = (function(){
         newCat.pushToArr();
         var newCat = new NewCategory('Mind Map', 4);
         newCat.pushToArr();
-        var newCat = new NewCategory('File transfer', 1);
+        var newCat = new NewCategory('File Transfer', 2);
         newCat.pushToArr();
-        var newCat = new NewCategory('File storage', 2);
+        var newCat = new NewCategory('File Storage', 2);
         newCat.pushToArr();
-        var newCat = new NewCategory('Uncategorised', 0);
+        var newCat = new NewCategory('Communication', 1);
+        newCat.pushToArr();
+        var newCat = new NewCategory('Finance', 1);
+        newCat.pushToArr();
+        var newCat = new NewCategory('Scheduler', 1);
         newCat.pushToArr();
 
         localStorage.setItem('ahCategories', JSON.stringify(arrCategory));
@@ -118,8 +130,8 @@ let itemController = (function(){
         $('.chips').material_chip();
 
         $('.chips-autocomplete').material_chip({
-            placeholder: 'Add more +',
             secondaryPlaceholder: 'Enter a category',
+            placeholder: 'Add more + ',
 
             autocompleteOptions: {
                 data: getDataAutocomplete(),
@@ -131,7 +143,6 @@ let itemController = (function(){
             }]
         });
     });
-
 
 
 /*============================================= Add new Category =============================================*/
@@ -277,14 +288,14 @@ let itemController = (function(){
 /*============================================= UPLOAD FILE ==========================*/
     
     function handleFileSelect(evt) {
-        var files = evt.target.files; // FileList object
+        let files = evt.target.files; // FileList object
         // use the 1st file from the list
         f = files[0];
-        var reader = new FileReader();
+        let reader = new FileReader();
         // Closure to capture the file information.
         reader.onload = (function(theFile) {
             return function(e) {
-                var parsed = JSON.parse(e.target.result);
+                let parsed = JSON.parse(e.target.result);
 
                 let uploadedCategories = parsed.categories;
                 let uploadedItems = parsed.items;
@@ -309,10 +320,23 @@ let itemController = (function(){
         // Read in the file as a data URL.
         reader.readAsText(f);
     }
-
+    
+/*============================================= UPLOAD FILE ==========================*/
+    
+    function getNameFromLink (e){
+        let link = e.originalEvent.clipboardData.getData('text');
+        function extractHostname(url) {
+            let hostname = url.replace(/^(?:https?:\/\/)?(?:www\.)?/i, "").split('/')[0];
+            return hostname;
+        }
+        let urlName = extractHostname(link).split('.')[0]; // remove ".com"
+        return (urlName);
+    }
     
 
     return {
+        getNameFromLink: getNameFromLink,
+        
         handleFileSelect: handleFileSelect,
         
         download: download,
@@ -360,6 +384,7 @@ let UIController = (() => {
         inputCategory: '#add__category',
         inputCategoryHidden: 'input[name="category"]',
         newBtn: '#add-new',
+        addNewSubmit: '#addNew',
         addNewItem: '#add-item',
         //catName: '.side-nav',
         catName: '#categories',
@@ -510,7 +535,16 @@ let UIController = (() => {
         $(DOM.inputName).val('');
     }
 
-
+    function validate() {
+        $(DOM.addNewSubmit).prop("disabled", true);
+        $(DOM.inputLink).on('input', function() {
+            if( !$(DOM.inputLink).val() ) {
+                $(DOM.addNewSubmit).prop("disabled", true);
+            }else {
+                $(DOM.addNewSubmit).prop("disabled", false);
+            }
+        });
+    }
 
 
 
@@ -522,38 +556,19 @@ let UIController = (() => {
         });
     }
 
-    /*============================================= UPLOAD FILE ==========================*/
 
+    /*============================================= Paste item name from link ==========================*/
 
-    function handleFileSelect(evt) {
-        var files = evt.target.files; // FileList object
-        // use the 1st file from the list
-        f = files[0];
-        var reader = new FileReader();
-        // Closure to capture the file information.
-        reader.onload = (function(theFile) {
-            return function(e) {
-                var parsed = JSON.parse(e.target.result);
+    function addName(urlName){
+        //$(DOM.inputName).trigger('click');
+        $(DOM.inputName).val(urlName);
 
-                let uploadedCategories = parsed.categories;
-                let uploadedItems = parsed.items;
-
-                itemController.categories = uploadedCategories;
-                itemController.allItems = uploadedItems;
-
-                localStorage.setItem('ahCategories', JSON.stringify(itemController.categories));
-                localStorage.setItem('ahData', JSON.stringify(itemController.allItems));
-            };
-        })(f);
-        // Read in the image file as a data URL.
-        reader.readAsText(f);
-        alert('Records has been synchronized');
-
+        setTimeout(function(){
+            $(DOM.inputName).focus();
+        }, 10);
     }
+
     
-
-
-
 
 
     return {
@@ -632,7 +647,11 @@ let UIController = (() => {
 
         clearInputs: clearInputs,
 
-        downloadItems: downloadItems
+        validate: validate,
+
+        downloadItems: downloadItems,
+
+        addName: addName
     };
 
 })();
@@ -660,7 +679,8 @@ let controller = ((itemCtrl, UICtrl) => {
 
         $(DOM.newBtn).click(function() {
             UIController.clearInputs();
-        });        
+            UIController.validate();
+        });
 
         // Add new inputs
 
@@ -695,6 +715,13 @@ let controller = ((itemCtrl, UICtrl) => {
             event.preventDefault();
             ctrlEditItem();
         });
+        
+        // Listen link input
+
+        $(DOM.inputLink).on("paste", function(e){
+            ctrlGenerateName(e);
+        });
+
 
         // Download
 
@@ -712,15 +739,17 @@ let controller = ((itemCtrl, UICtrl) => {
 
     };
 
+
 /*============================================= Upload =============================================*/
     let ctrlUpload = () => {
         // 1. click to hidden input
         $("#upload").trigger("click");
         // 2. Listen for click
         document.getElementById('upload').addEventListener('change', itemController.handleFileSelect, false);
-        
 
     };
+
+
 
 /*============================================= Add new items =============================================*/
     let ctrlAddItem = () => {
@@ -742,10 +771,19 @@ let controller = ((itemCtrl, UICtrl) => {
         UIController.buildCatList();
     };
 
+/*============================= Generate name from link =============================*/
+
+    let ctrlGenerateName = (link) => {
+        // 1. Get name from link
+        let urlName = itemController.getNameFromLink(link);
+
+        // 2. paste name to name input
+        UIController.addName (urlName);
+    };
 
 /*============================================= Edit items - Submit =============================================*/
     // Submit existing in the form data
-                                                // !!! Eny field can be changed, category amounts also!!!
+                                                // !!! Any field can be changed, category amounts also!!!
     let ctrlEditItem = () => {
 
         let input;
@@ -759,7 +797,7 @@ let controller = ((itemCtrl, UICtrl) => {
         itemController.addItem(input);
 
         // Increase counter in categories
-        //itemController.catCounter(input); // What if delete category?
+        //itemController.catCounter(input);
 
         // 4. Reload all items in UI
         UIController.displayItems();
