@@ -24,11 +24,11 @@ let UIController = (() => {
     let DOM = DOMstrings;
     let allItems = itemController.allItems;
 
-
+    const allItemsCat = 'All';
 
     /*============================================= Build Categories list =============================================*/
     let buildCategoryList = () => {
-        let categoryList = "";
+        let categoryList = `<li><a class="waves-effect" href="#">${allItemsCat}</a><span>${allItems.length}</span></li>`; // All Items category
         for (let [i, value] of itemController.categories.entries()) { // using destructuring and .entries
             categoryList = categoryList+`<li><a class="waves-effect" href="#">${itemController.categories[i].name}</a><span>${itemController.categories[i].itemCounter}</span></li>`
         }
@@ -53,7 +53,12 @@ let UIController = (() => {
             }
 
             let i;
-            if(cat){ // if invoked with parameter (click on category name)
+            if(!cat || cat === allItemsCat){ // if invoked without parameter (edit or remove item) OR click on "All"
+                for(i=0; i<allItems.length; i++){
+                    buildItem();
+                }
+
+            }else { // if invoked with parameter (click on category name)
                 for(i=0; i<allItems.length; i++){
 
                     // if more than 1 category in item
@@ -64,10 +69,6 @@ let UIController = (() => {
                         }
                     }
                 }
-            }else {
-                for(i=0; i<allItems.length; i++){
-                    buildItem();
-                }
             }
         
             $('.itembox').empty() .append(
@@ -75,6 +76,14 @@ let UIController = (() => {
             );
     };
 
+
+    /*============================================= Close Side Naw =============================================*/
+
+    function hideSideNav(){
+        setTimeout(function(){
+            $('.button-collapse').sideNav('hide');
+        }, 200);
+    }
 
     /*============================================= Remove Item =============================================*/
 
@@ -275,7 +284,9 @@ let UIController = (() => {
 
         downloadItems: downloadItems,
 
-        addName: addName
+        addName: addName,
+
+        hideSideNav: hideSideNav
     };
 
 })();

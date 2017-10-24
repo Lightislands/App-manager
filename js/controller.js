@@ -38,6 +38,7 @@ let controller = ((itemCtrl, UICtrl) => {
             event.preventDefault();
             let cat = $(event.target).parent().find('a').text();
             UICtrl.displayItems(cat);
+            UICtrl.hideSideNav();
         });
         
         // Remove item
